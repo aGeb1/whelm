@@ -1,16 +1,14 @@
 use directories::ProjectDirs;
 use std::env;
-// use std::fs;
 use std::fs::{read_to_string, write, create_dir_all};
 use std::path;
-// use std::io::ErrorKind;
 
 fn main() {
     let outline : &str = "▒";
 
     // whelm_arg contains the whelm opt if it is a valid whelm option
     let whelm_arg : Option<usize> = env::args().nth(1).map_or(
-        None, |x| x.parse::<usize>().ok());
+        None, |x| Some(x.parse::<usize>().unwrap_or(5)));
 
     // whelm_path contains the path for the whelm file, given it exists
     // note that this may panic, but it isn't likely to happen
@@ -19,11 +17,14 @@ fn main() {
         .unwrap().data_dir().to_path_buf();
     let whelm_file_path : path::PathBuf = whelm_dir_path.join(".whelm");
 
-    // note that program panics if whelm \not\in [0,4]
     let whelm = whelm_arg.unwrap_or(
         read_to_string(whelm_file_path.clone()).map_or(2,
         |x| x.parse::<usize>().unwrap_or(2)));
-
+    
+    if whelm > 4 {
+        eprint!("Invalid whelm value - enter an integer from 0 to 4.");
+        return;
+    }
     lines14(whelm, outline);
     lines23(whelm, outline);
     lines14(whelm, outline);
