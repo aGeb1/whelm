@@ -1,10 +1,34 @@
+// use directories::ProjectDirs;
+use std::env;
+use std::fs::{read_to_string, write};
+use std::path;
+
 fn main() {
-    let whelm = 0;
+    // whelm_arg contains the whelm opt if it is a valid whelm option
+    let whelm_arg : Option<usize> = env::args().nth(1).map_or(
+        None, |x| x.parse::<usize>().ok());
+
+    // whelm_path contains the path for the whelm file, given it exists
+    // note that this may panic, but it isn't likely to happen
+    let whelm_path : path::PathBuf = path::Path::new("../whelm.txt").to_path_buf();
+        // ProjectDirs::from("org", "ageb1", "whelm")
+        // .unwrap().data_dir().join("whelm.txt");
+
+    // note that program panics if whelm \not\in [0,4]
+    let whelm = whelm_arg.unwrap_or(
+        read_to_string(whelm_path.clone()).map_or(2,
+        |x| x.parse::<usize>().unwrap_or(2)));
 
     firstline(whelm);
     secondline(whelm);
     thirdline(whelm);
     firstline(whelm);
+
+    if let Some(new_whelm) = whelm_arg {
+        if write(whelm_path, new_whelm.to_string()).is_err()
+        { println!("couldn't save data"); }
+        else { println!("saved data"); }
+    }
 }
 
 fn firstline(whelm: usize) {
