@@ -4,7 +4,7 @@ use std::fs::{read_to_string, write};
 use std::path;
 
 fn main() {
-    // let outline : char = 'X';
+    let outline : &str = "▒";
 
     // whelm_arg contains the whelm opt if it is a valid whelm option
     let whelm_arg : Option<usize> = env::args().nth(1).map_or(
@@ -21,7 +21,9 @@ fn main() {
         read_to_string(whelm_path.clone()).map_or(2,
         |x| x.parse::<usize>().unwrap_or(2)));
 
-    lines14(whelm); lines23(whelm); lines14(whelm);
+    lines14(whelm, outline);
+    lines23(whelm, outline);
+    lines14(whelm, outline);
 
     if let Some(new_whelm) = whelm_arg {
         if write(whelm_path, new_whelm.to_string()).is_err()
@@ -30,14 +32,14 @@ fn main() {
     }
 }
 
-fn lines14(whelm: usize) {
+fn lines14(whelm: usize, outline : &str) {
     let spaces = 11 * whelm;
-    println!("{:spaces$}{}", "", "XXXXXXXXXXX");
+    println!("{0:spaces$}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}{1}", "", outline);
 }
 
-fn lines23(whelm: usize) {
+fn lines23(whelm: usize, outline : &str) {
     let mut fills = [" "; 5];
-    fills[whelm] = "X";
+    fills[whelm] = outline;
     println!("{0} MINIMUM {0}{1}  UNDER  {1}{2}         {2}{3}  OVER   {3}{4} MAXIMUM {4}\n\
               {0}  WHELM  {0}{1} WHELMED {1}{2} WHELMED {2}{3} WHELMED {3}{4}  WHELM  {4}",
               fills[0], fills[1], fills[2], fills[3], fills[4]);
