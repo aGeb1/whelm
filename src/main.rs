@@ -1,7 +1,9 @@
-// use directories::ProjectDirs;
+use directories::ProjectDirs;
 use std::env;
-use std::fs::{read_to_string, write};
+// use std::fs;
+use std::fs::{read_to_string, write, create_dir_all};
 use std::path;
+// use std::io::ErrorKind;
 
 fn main() {
     let outline : &str = "▒";
@@ -12,13 +14,14 @@ fn main() {
 
     // whelm_path contains the path for the whelm file, given it exists
     // note that this may panic, but it isn't likely to happen
-    let whelm_path : path::PathBuf = path::Path::new("../whelm.txt").to_path_buf();
-        // ProjectDirs::from("org", "ageb1", "whelm")
-        // .unwrap().data_dir().join("whelm.txt");
+    let whelm_dir_path : path::PathBuf = //path::Path::new("..").to_path_buf();
+        ProjectDirs::from("org", "ageb1", "whelm")
+        .unwrap().data_dir().to_path_buf();
+    let whelm_file_path : path::PathBuf = whelm_dir_path.join(".whelm");
 
     // note that program panics if whelm \not\in [0,4]
     let whelm = whelm_arg.unwrap_or(
-        read_to_string(whelm_path.clone()).map_or(2,
+        read_to_string(whelm_file_path.clone()).map_or(2,
         |x| x.parse::<usize>().unwrap_or(2)));
 
     lines14(whelm, outline);
@@ -26,9 +29,14 @@ fn main() {
     lines14(whelm, outline);
 
     if let Some(new_whelm) = whelm_arg {
-        if write(whelm_path, new_whelm.to_string()).is_err()
-        { println!("couldn't save data"); }
-        // else { println!("saved data"); }
+        if !whelm_dir_path.exists() {
+            if let Err(e) = create_dir_all(whelm_dir_path.clone()) {
+                eprintln!("{:?}", e.kind());
+            }
+        }
+        if let Err(e) = write(whelm_file_path, new_whelm.to_string()) {
+            eprintln!("{:?}", e.kind());
+        }
     }
 }
 
