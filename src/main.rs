@@ -4,6 +4,8 @@ use std::fs::{read_to_string, write};
 use std::path;
 
 fn main() {
+    // let outline : char = 'X';
+
     // whelm_arg contains the whelm opt if it is a valid whelm option
     let whelm_arg : Option<usize> = env::args().nth(1).map_or(
         None, |x| x.parse::<usize>().ok());
@@ -19,33 +21,24 @@ fn main() {
         read_to_string(whelm_path.clone()).map_or(2,
         |x| x.parse::<usize>().unwrap_or(2)));
 
-    firstline(whelm);
-    secondline(whelm);
-    thirdline(whelm);
-    firstline(whelm);
+    lines14(whelm); lines23(whelm); lines14(whelm);
 
     if let Some(new_whelm) = whelm_arg {
         if write(whelm_path, new_whelm.to_string()).is_err()
         { println!("couldn't save data"); }
-        else { println!("saved data"); }
+        // else { println!("saved data"); }
     }
 }
 
-fn firstline(whelm: usize) {
+fn lines14(whelm: usize) {
     let spaces = 11 * whelm;
     println!("{:spaces$}{}", "", "XXXXXXXXXXX");
 }
 
-fn secondline(whelm: usize) {
+fn lines23(whelm: usize) {
     let mut fills = [" "; 5];
     fills[whelm] = "X";
-    println!("{0} MINIMUM {0}{1}  UNDER  {1}{2}         {2}{3}  OVER   {3}{4} MAXIMUM {4}",
-              fills[0], fills[1], fills[2], fills[3], fills[4]);
-}
-
-fn thirdline(whelm: usize) {
-    let mut fills = [" "; 5];
-    fills[whelm] = "X";
-    println!("{0}  WHELM  {0}{1} WHELMED {1}{2} WHELMED {2}{3} WHELMED {3}{4}  WHELM  {4}",
+    println!("{0} MINIMUM {0}{1}  UNDER  {1}{2}         {2}{3}  OVER   {3}{4} MAXIMUM {4}\n\
+              {0}  WHELM  {0}{1} WHELMED {1}{2} WHELMED {2}{3} WHELMED {3}{4}  WHELM  {4}",
               fills[0], fills[1], fills[2], fills[3], fills[4]);
 }
